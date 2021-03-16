@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import {View} from 'react-native'
+import {View, Dimensions} from 'react-native'
 
 import LineChart from './components/line-chart'
 import ColumnChart from './components/column-chart'
@@ -39,7 +39,7 @@ PureChart.propTypes = {
 }
 PureChart.defaultProps = {
   color: '#297AB1',
-  height: 100,
+  height: 200,
   numberOfYAxisGuideLine: 5,
   backgroundColor: '#FFFFFF'
 }

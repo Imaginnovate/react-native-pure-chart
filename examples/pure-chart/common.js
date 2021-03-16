@@ -5,6 +5,7 @@ import {View, Text} from 'react-native'
 const SINGLE_SERIES_WITH_NUMBERS = 0
 const SINGLE_SERIES_WITH_OBJECTS = 1
 const MULTI_SERIES = 2
+let index = 0
 
 function flattenData (data) {
   let numberCount = 0
@@ -38,10 +39,14 @@ function flattenData (data) {
   }
 }
 
-function getMaxValue (data) {
+function getMaxValue (data, yAxisLabels) {
+  console.log(yAxisLabels);
+  let values1 = [0,200,400,600,800,1000];
   let values = []
-
-  data.map((value) => {
+  // const iter = data[index];
+  //   index += 1;
+    // return iter;
+    values1.map((value) => {
     if (typeof value === 'number') {
       values.push(value)
     } else if (typeof value === 'object') {
@@ -60,11 +65,11 @@ function getMaxValue (data) {
   })
 
   if (values.length === 0) return 0
-
+  console.log(Math.max.apply(null, values));
   return Math.max.apply(null, values)
 }
 
-export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
+export const initData = (dataProp, height, gap, numberOfPoints = 5, yAxisLabels) => {
   let guideArray, max, sortedData
   if (!dataProp || !Array.isArray(dataProp) || dataProp.length === 0) {
     return {
@@ -74,8 +79,9 @@ export const initData = (dataProp, height, gap, numberOfPoints = 5) => {
     }
   }
 
-  max = Math.max(getMaxValue(dataProp))
+  max = getMaxValue(dataProp, yAxisLabels)
   guideArray = getGuideArray(max, height, numberOfPoints)
+  console.log(guideArray);
 
   dataProp = flattenData(dataProp)
 
@@ -179,7 +185,7 @@ export const refineData = (flattenData, max, height, gap) => {
 
 export const getGuideArray = (max, height, numberOfPoints = 5) => {
   let x = parseInt(max)
-
+  console.log('before x', x);
   let arr = []
   let length
   let temp
@@ -217,12 +223,22 @@ export const getGuideArray = (max, height, numberOfPoints = 5) => {
   } else {
     x = 10 * x / first
   }
-
-  for (let i = 1; i < numberOfPoints + 1; i++) {
+  console.log('after x', x);
+  
+  // for (let i = 1; i < numberOfPoints + 1; i++) {
+  //   let v = x / numberOfPoints * i
+  //   arr.push([v + postfix, v * temp / max * height, 1 * temp / max * height])
+  // }
+ let yValuesAxis = [0, 200, 400,600,800,1000];
+  for (let i = 1; i < yValuesAxis.length; i++) {
+    console.log(x);
     let v = x / numberOfPoints * i
-    arr.push([v + postfix, v * temp / max * height, 1 * temp / max * height])
+    console.log(v);
+    console.log(postfix);
+    console.log(v * temp / max * height);
+    arr.push([yValuesAxis[i], yValuesAxis[i]/ max * height, yValuesAxis[i] / max * height])
   }
-
+   console.log(arr);
   return arr
 }
 
@@ -240,10 +256,11 @@ export const drawYAxis = (color = '#e0e0e0') => {
   )
 }
 
-export const drawYAxisLabels = (arr, height, minValue, color = '#000000', symbol='') => {
+export const drawYAxisLabels = (arr, height, minValue, color = '#515151') => {
+  console.log(arr);
   return (
     <View style={{
-      width: 33 + 5*symbol.length,
+      width: 33,
       height: height,
       justifyContent: 'flex-end',
       alignItems: 'flex-end',
@@ -261,7 +278,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000', symbol
           <Text style={{fontSize: 11}}>0</Text>
         </View>
       ) : arr.map((v, i) => {
-        if (v[1] > height-5) return null
+        if (v[1] > height) return null
         return (
           <View
             key={'guide' + i}
@@ -269,7 +286,7 @@ export const drawYAxisLabels = (arr, height, minValue, color = '#000000', symbol
               bottom: v[1] - 5,
               position: 'absolute'
             }}>
-            <Text style={{fontSize: 11, color: color}}>{v[0] + ' ' + symbol}</Text>
+            <Text style={{fontSize: 11, color: color}}>{v[0]}</Text>
           </View>
         )
       })}
@@ -330,7 +347,7 @@ export const drawXAxis = (color = '#e0e0e0') => {
     }} />
   )
 }
-export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumberXaxisLabel) => {
+export const drawXAxisLabels = (sortedData, gap, color = '#515151', showEvenNumberXaxisLabel, showLabel) => {
   return (
     <View style={{
       width: '100%',
@@ -348,11 +365,8 @@ export const drawXAxisLabels = (sortedData, gap, color = '#000000', showEvenNumb
               width: gap,
               alignItems: 'center'
             }}>
-              <Text style={{fontSize: 9, color: color}}>
-                {
-                  // data[3]
-                  data['x']
-                }
+              <Text style={{fontSize: 11, color: color}}>
+                 { showLabel? data['x'] : ''}
               </Text>
             </View>
           )

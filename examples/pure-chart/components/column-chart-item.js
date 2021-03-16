@@ -17,7 +17,7 @@ export default class ColumnChartItem extends Component {
           height: this.props.seriesArray[seriesIndex].data[this.props.dataIndex]['ratioY'],
           marginRight: lastElementMarginRight,
           backgroundColor: this.props.seriesArray[seriesIndex].seriesColor,
-          borderColor: this.props.isSelected ? this.props.highlightColor : this.props.defaultBorderColor
+          borderColor: this.props.isSelected ? this.props.highlightColor : '#FFFFFF'
         }]} />
       )
     }
@@ -42,7 +42,9 @@ const styles = StyleSheet.create({
   },
   bar: {
     justifyContent: 'flex-end',
-    borderWidth: 1
+    borderWidth: 0,
+    borderTopRightRadius:10,
+    borderTopLeftRadius: 10,
   }
 })
 
